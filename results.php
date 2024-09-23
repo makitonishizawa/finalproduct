@@ -7,20 +7,32 @@ $dbname = 'gs_db_finalproduct';  // データベース名
 $user = 'root';  // ユーザー名
 $password = '';  // パスワード（必要に応じて設定）
 
+// GETリクエストからtestIdを取得
+$testId = isset($_GET['testId']) ? $_GET['testId'] : null;
+
+if (!$testId) {
+    echo "testIdが設定されていません。";
+    exit();
+}
+
 try {
     // データベースに接続
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // test = 1（視覚テスト）の平均resultsを取得
-    $stmt1 = $pdo->prepare("SELECT AVG(results) as avg_visual FROM results WHERE test = 1");
-    $stmt1->execute();
-    $avg_visual = $stmt1->fetch(PDO::FETCH_ASSOC)['avg_visual'] / 100;  // 100で割る
+    // 視覚テストの平均正解率を取得 (testType = 1)
+    $stmtVisual = $pdo->prepare("SELECT AVG(results) as average_visual FROM results WHERE testId = :testId AND testType = 1");
+    $stmtVisual->bindParam(':testId', $testId, PDO::PARAM_STR);
+    $stmtVisual->execute();
+    $visualResult = $stmtVisual->fetch(PDO::FETCH_ASSOC);
+    $averageVisual = $visualResult['average_visual'] ?? 0;
 
-    // test = 2（聴覚テスト）の平均resultsを取得
-    $stmt2 = $pdo->prepare("SELECT AVG(results) as avg_audio FROM results WHERE test = 2");
-    $stmt2->execute();
-    $avg_audio = $stmt2->fetch(PDO::FETCH_ASSOC)['avg_audio'] / 100;  // 100で割る
+    // 聴覚テストの平均正解率を取得 (testType = 2)
+    $stmtAudio = $pdo->prepare("SELECT AVG(results) as average_audio FROM results WHERE testId = :testId AND testType = 2");
+    $stmtAudio->bindParam(':testId', $testId, PDO::PARAM_STR);
+    $stmtAudio->execute();
+    $audioResult = $stmtAudio->fetch(PDO::FETCH_ASSOC);
+    $averageAudio = $audioResult['average_audio'] ?? 0;
 
 } catch (PDOException $e) {
     echo 'データベース接続エラー: ' . $e->getMessage();
@@ -86,10 +98,44 @@ try {
             box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
         }
 
+          /* ナビゲーションバーのスタイル */
+          .navbar {
+            background-color: #003366; /* 暗い青に変更 */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        .navbar a:hover {
+            background-color: #cccccc; /* ホバー時は灰色に変更 */
+            color: black;
+        }
+
     </style>
 </head>
 
 <body>
+    <!-- ナビゲーションバーを追加 -->
+    <div class="navbar">
+        <a href="index.php">トップ</a>
+        <a href="instruction.php">認知特性とは</a>
+        <a href="reset_test.php">診断</a> <!-- 診断ボタンをリセットを通過してから診断ページへ -->
+        <a href="resultsmenu.php">診断結果</a>
+    </div>
+
+
 
     <h1>テスト別平均正解率</h1>
 
@@ -107,13 +153,21 @@ try {
         </div>
     </div>
 
-    <!-- index.phpに戻るボタン -->
-    <button onclick="location.href='index.php'">トップに戻る</button>
+    <br>
+    <br>
+    <h1>あなたの記憶特性</h1>
+    <p>あなたの記憶特性は「〇〇」型です</p>
+    <p>このタイプの人は、・・・・・・・・・・です。勉強を行う際には・・・・・・・を用いてインプットを行うと記憶が定着しやすくなります。</p>
+
+
+
+    <!-- resultsmenu.phpに戻るボタン -->
+    <button onclick="location.href='resultsmenu.php'">一覧に戻る</button>
 
     <script>
-        // PHPから取得した平均値をJavaScriptに渡す
-        const avgVisual = <?php echo json_encode($avg_visual); ?>;
-        const avgAudio = <?php echo json_encode($avg_audio); ?>;
+        // PHPから取得した平均値をJavaScriptに渡す (100で割る)
+        const avgVisual = <?php echo json_encode($averageVisual / 100); ?>;
+        const avgAudio = <?php echo json_encode($averageAudio / 100); ?>;
 
         const ctxVisual = document.getElementById('visualChart').getContext('2d');
         const ctxAudio = document.getElementById('audioChart').getContext('2d');
@@ -177,6 +231,4 @@ try {
         });
     </script>
 
-</body>
-
-</html>
+</

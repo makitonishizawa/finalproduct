@@ -59,24 +59,59 @@ session_start();
             font-size: 0.8em;
             color: #888;
         }
+
+         /* ナビゲーションバーのスタイル */
+         .navbar {
+            background-color: #003366; /* 暗い青に変更 */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        .navbar a:hover {
+            background-color: #cccccc; /* ホバー時は灰色に変更 */
+            color: black;
+        }
+
     </style>
 </head>
 
 <body>
 
-    <h1>はじめに</h1>
+    <!-- ナビゲーションバーを追加 -->
+    <div class="navbar">
+        <a href="index.php">トップ</a>
+        <a href="instruction.php">認知特性とは</a>
+        <a href="testmenu.php">診断</a>
+        <a href="resultsmenu.php">診断結果</a>
+    </div>
+
+    <h1>認知特性とは</h1>
 
     <div class="container">
-        <p>このテストはあなたの記憶特性を測定するテストです。</p>
-        <p>10個の文章が表示または読み上げられますので、内容を記憶し、その後表示される問題に解答してください。</p>
-        <p>問題は全部で〇〇セットあります。</p>
+        <p>認知特性とは、外部からの刺激をどのように認知、記憶するかの各個人の特性です</p>
+        <p>例えば、聴覚による刺激を視覚による刺激よりも記憶に残る人もいますし、その逆のケースもあります</p>
+        <p>認知特性は人により個人差があります</p>
+        <p>認知特性を知ることにより、今後の学習を効率的に進める手助けとなります</p>
 
-        <!-- トップ画面に戻るボタン -->
-        <button onclick="location.href='index.php'">トップ画面に戻る</button>
+        <!-- 診断画面に戻るボタン -->
+        <button onclick="location.href='testmenu.php'">登録して診断をはじめる</button>
     </div>
 
     <footer>
-        <p>&copy; 2024 記憶テスト. All rights reserved.</p>
+        <p>&copy; 2024 記憶診断. All rights reserved.</p>
     </footer>
 
 </body>

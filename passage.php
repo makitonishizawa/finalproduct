@@ -7,9 +7,15 @@ $dbname = 'gs_db_finalproduct';  // データベース名
 $user = 'root';  // ユーザー名
 $password = '';  // パスワード（必要に応じて設定）
 
-// POSTデータからrandomNumberとtestTypeを取得
+// POSTデータからrandomNumber、testType、testIdを取得
 $randomNumber = isset($_POST['randomNumber']) ? $_POST['randomNumber'] : null;
 $testType = isset($_POST['testType']) ? $_POST['testType'] : null;
+$testId = isset($_POST['testId']) ? $_POST['testId'] : null;
+
+// POSTデータの確認
+echo '<pre>';
+print_r($_POST);
+echo '</pre>';
 
 try {
     // データベースに接続
@@ -97,10 +103,11 @@ try {
 
     <div id="passageDisplay"></div>
 
-    <!-- randomNumberとtestTypeをquestions.phpにPOSTするためのフォーム -->
+    <!-- randomNumber、testType、およびtestIdをquestions.phpにPOSTするためのフォーム -->
     <form id="questionsForm" action="questions.php" method="POST">
         <input type="hidden" name="randomNumber" value="<?php echo htmlspecialchars($randomNumber, ENT_QUOTES, 'UTF-8'); ?>">
         <input type="hidden" name="testType" value="<?php echo htmlspecialchars($testType, ENT_QUOTES, 'UTF-8'); ?>">
+        <input type="hidden" name="testId" value="<?php echo htmlspecialchars($testId, ENT_QUOTES, 'UTF-8'); ?>"> <!-- testIdを追加 -->
     </form>
 
     <script>
@@ -135,7 +142,7 @@ try {
     </script>
 
     <footer>
-        <p>&copy; 2024 パッセージリーダー. All rights reserved.</p>
+        <p>&copy; 2024 記憶特性診断. All rights reserved.</p>
     </footer>
 
 </body>

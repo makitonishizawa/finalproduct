@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+
+// ログイン状態の確認（セッションにusernameがある場合）
+$loggedIn = isset($_SESSION['username']);
+$username = $loggedIn ? $_SESSION['username'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -16,12 +21,19 @@ session_start();
             color: #333;
             text-align: center;
             padding: 50px;
+            margin-top: 80px; /* メニューバー分の余白を確保 */
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
             color: #444;
+        }
+
+        img {
+            max-width: 30%; /* 画像の幅を半分に設定 */
+            height: auto; /* 画像のアスペクト比を保つ */
+            margin: 20px 0; /* 上下にスペースを追加 */
         }
 
         button {
@@ -66,59 +78,115 @@ session_start();
             font-size: 0.8em;
             color: #888;
         }
+
+        /* ナビゲーションバーのスタイル */
+        .navbar {
+            background-color: #003366; /* 暗い青に変更 */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar a, .navbar span {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        .navbar a:hover {
+            background-color: #cccccc; /* ホバー時は灰色に変更 */
+            color: black;
+        }
+
+        /* ユーザー名とログオフを右側に表示するためのスタイル */
+        /* .navbar .right { */
+            /* float: right; */
+        /* } */
+
+        /* 診断をスタートボタンの位置を右下に固定 */
+        #startButton {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #startButton:hover {
+            background-color: #0056b3;
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
 
 <body>
 
-    <h1>記憶特性測定テスト</h1>
+    <!-- ナビゲーションバーを追加 -->
+    <div class="navbar">
+        <a href="index.php">トップ</a>
+        <a href="instruction.php">認知特性とは</a>
+        <a href="reset_test.php">診断</a> <!-- 診断ボタンをリセットを通過してから診断ページへ -->
+        <a href="resultsmenu.php">診断結果</a>
+
+        <!-- ログイン状態によって表示を切り替え -->
+        <?php if ($loggedIn): ?>
+            <a class="right" href="logout.php">ログオフ</a>
+            <span class="right"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>
+        <?php else: ?>
+            <!-- ログイン/サインアップを表示 -->
+            <a class="right" href="login.php">log on/sign up</a>
+        <?php endif; ?>
+    </div>
+
+    <h1>自分の認知特性を理解する　それはより効率的に学習を進める第一歩</h1>
 
     <div class="explanation">
-        <p>このテストはあなたの記憶特性を測定するテストです。</p>
-        <p>10個の文章が表示または読み上げられますので、内容を記憶し、その後表示される問題に解答してください。</p>
-        <p>問題は全部で〇〇セットあります。</p>
+        <!-- 1つ目の画像を挿入 -->
+        <img src="img/study_hard_struggling.png" alt="努力して学習している人のイメージ">
+
+        <p>一所懸命努力しているのになかなか頭に入ってこない、成果に結びつかない</p>
+        <p>他の人や本で勧められている学習法を試してもなんか上手く成果に結びつかない</p>
+        <p>子どもや生徒に勉強を教える際、なかなか上手く理解してもらえない</p>
+
+        <!-- 2つ目の画像を挿入 -->
+        <img src="img/teaching_child_struggle.png" alt="子どもに勉強を教えるのに苦労しているイメージ">
+
+        <p>それは、その学習方法や教育方法がその人の認知特性にあっていないからかもしれません</p>
+        <p>認知特性は個人により異なります。まずは認知特性を知る、ということが効率的に学習を進める第一歩です</p>
+
+        <!-- 3つ目の画像を挿入 -->
+        <img src="img/learning_styles.png" alt="異なる学習スタイルを表現したイメージ">
+
+        <p>〇〇(product名)はあなたの記憶特性を診断するツールです</p>
+        <p>診断結果とともに今後の学習方法のアドバイスを提供します</p>
+        <p>診断結果サンプル</p>
+
+        <!-- サンプルレポート画像を挿入 -->
+        <img src="img/sample_report.png" alt="サンプルレポートのイメージ">
+       
     </div>
 
-    <div class="container">
-        <!-- 視覚スタートボタン -->
-        <form id="randomNumberFormVisual" action="passage.php" method="POST">
-            <input type="hidden" id="randomNumberInputVisual" name="randomNumber">
-            <input type="hidden" id="testTypeVisual" name="testType">
-            <button type="button" onclick="generateRandomNumberForVisual()">視覚スタート</button>
-        </form>
-
-        <!-- 聴覚スタートボタン -->
-        <form id="randomNumberFormAudio" action="passage2.php" method="POST">
-            <input type="hidden" id="randomNumberInputAudio" name="randomNumber">
-            <input type="hidden" id="testTypeAudio" name="testType">
-            <button type="button" onclick="generateRandomNumberForAudio()">聴覚スタート</button>
-        </form>
-
-        <!-- results.phpへの遷移ボタン -->
-        <button onclick="location.href='results.php'">結果を見る</button>
-    </div>
+    <!-- スクロールしても常に右下に表示される「診断をスタート」ボタン -->
+    <a href="reset_test.php">
+        <button id="startButton">診断をスタート</button> <!-- 診断をスタートボタンもリセットを通過 -->
+    </a>
 
     <footer>
-        <p>&copy; 2024 〇〇〇〇. All rights reserved.</p>
+        <p>&copy; 2024 記憶特性診断. All rights reserved.</p>
     </footer>
-
-    <script>
-        // 視覚用のランダム数値生成とpassage.phpへのPOST
-        function generateRandomNumberForVisual() {
-            const randomNumber = Math.floor(Math.random() * 5) + 1;
-            document.getElementById('randomNumberInputVisual').value = randomNumber;
-            document.getElementById('testTypeVisual').value = 1; // testType 1 (視覚テスト)
-            document.getElementById('randomNumberFormVisual').submit(); // passage.php へPOST
-        }
-
-        // 聴覚用のランダム数値生成とpassage2.phpへのPOST
-        function generateRandomNumberForAudio() {
-            const randomNumber = Math.floor(Math.random() * 5) + 1;
-            document.getElementById('randomNumberInputAudio').value = randomNumber;
-            document.getElementById('testTypeAudio').value = 2; // testType 2 (聴覚テスト)
-            document.getElementById('randomNumberFormAudio').submit(); // passage2.php へPOST
-        }
-    </script>
 
 </body>
 
