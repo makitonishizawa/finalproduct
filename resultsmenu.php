@@ -26,11 +26,18 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // resultsテーブルから該当ユーザーのtestIdを取得
-    $stmt = $pdo->prepare("SELECT DISTINCT testId FROM results WHERE userId = :username");
+    // 完了したテストのみ (testId に対応するエントリが 10 個存在する場合) を取得
+    $stmt = $pdo->prepare("
+        SELECT testId, MIN(created_at) as test_date
+        FROM results
+        WHERE userId = :username
+        GROUP BY testId
+        HAVING COUNT(*) = 10
+        ORDER BY test_date DESC
+    ");
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);
     $stmt->execute();
-    $testIds = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $testResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
     echo 'データベース接続エラー: ' . $e->getMessage();
@@ -129,14 +136,15 @@ try {
 
     <h1>診断結果一覧</h1>
 
-    <?php if (!empty($testIds)): ?>
+    <?php if (!empty($testResults)): ?>
         <div class="test-list">
             <h2><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>さんの診断結果</h2>
             <ul>
-                <?php foreach ($testIds as $test): ?>
+                <?php foreach ($testResults as $test): ?>
                     <li>
                         <a href="results.php?testId=<?php echo htmlspecialchars($test['testId'], ENT_QUOTES, 'UTF-8'); ?>">
-                            テストID: <?php echo htmlspecialchars($test['testId'], ENT_QUOTES, 'UTF-8'); ?>
+                            テストID: <?php echo htmlspecialchars($test['testId'], ENT_QUOTES, 'UTF-8'); ?> -
+                            実施日: <?php echo htmlspecialchars(date('Y-m-d', strtotime($test['test_date'])), ENT_QUOTES, 'UTF-8'); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>

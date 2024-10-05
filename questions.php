@@ -15,10 +15,10 @@ $testId = isset($_POST['testId']) ? $_POST['testId'] : null;
 // セッションからusernameを取得
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 
-// POSTデータの確認
-echo '<pre>';
-print_r($_POST);
-echo '</pre>';
+// POSTデータの確認（開発用）
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
 
 
 try {
@@ -48,9 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['correctAnswers'])) {
 
 
     // save_results.phpにPOSTして結果を保存
-    // 確認のため testType と testId の内容を表示
-    echo 'Test ID: ' . htmlspecialchars($testId, ENT_QUOTES, 'UTF-8') . '<br>';
-    echo 'Test Type: ' . htmlspecialchars($testType, ENT_QUOTES, 'UTF-8') . '<br>';
+    // 確認のため testType と testId の内容を表示（開発用）
+    // echo 'Test ID: ' . htmlspecialchars($testId, ENT_QUOTES, 'UTF-8') . '<br>';
+    // echo 'Test Type: ' . htmlspecialchars($testType, ENT_QUOTES, 'UTF-8') . '<br>';
     
     ?>
     <form id="saveResultsForm" action="save_results.php" method="POST">

@@ -12,10 +12,10 @@ $randomNumber = isset($_POST['randomNumber']) ? $_POST['randomNumber'] : null;
 $testType = isset($_POST['testType']) ? $_POST['testType'] : null;
 $testId = isset($_POST['testId']) ? $_POST['testId'] : null;
 
-// POSTデータの確認
-echo '<pre>';
-print_r($_POST);
-echo '</pre>';
+// POSTデータの確認（開発用）
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
 
 try {
     // データベースに接続

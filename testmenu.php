@@ -19,8 +19,8 @@ if (!isset($_SESSION['testId'])) {
     $_SESSION['testId'] = uniqid();  // 一意のtestIdを生成
 }
 
-// デバッグ用: セッションの内容を確認
-echo 'Test ID in session: ' . $_SESSION['testId'];
+// デバッグ用: セッションの内容を確認（開発用）
+// echo 'Test ID in session: ' . $_SESSION['testId'];
 
 // 同じtestId内で同じrandomNumberが出ないようにする関数
 function generateUniqueRandomNumber($min, $max) {
@@ -149,7 +149,14 @@ $partLabel = $_SESSION['currentPart'] === 'visual' ? '視覚パート' : '聴覚
     </div>
 
     <div class="container">
-        <h1>診断をスタート</h1>
+        <?php if ($_SESSION['testCount'] ===0): ?>    
+    
+            <h1>診断をスタート</h1>
+            <p>10個の文章が表示、または読み上げられます。内容を記憶し、その後表示される10個の問題に回答してください</p>
+            <p>視覚パートと聴覚パートが交互に5つづつ、合計10パート出題されます</p>
+
+        <?php else: ?> 
+        <?php endif; ?>
 
         <?php if ($_SESSION['testCount'] < 10): ?>
             <!-- 現在のパートと回数を表示 -->

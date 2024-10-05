@@ -136,30 +136,36 @@ try {
     </div>
 
 
+    <!-- 学習特性の診断結果を表示 -->
+    <?php if ($averageAudio > $averageVisual): ?>
+            <h1>あなたの記憶特性は「聴覚優位」型です</h1>
+            <p>このタイプの人は、学習を行う際には聴覚情報を用いてインプットを行うと記憶が定着しやすくなります。</p>
+        <?php else: ?>
+            <h1>あなたの記憶特性は「視覚優位」型です</h1>
+            <p>このタイプの人は、学習を行う際には視覚情報を用いてインプットを行うと記憶が定着しやすくなります。</p>
+        <?php endif; ?>
 
-    <h1>テスト別平均正解率</h1>
+    <br>
+    <br>
+
+    <h2>パート別平均正解率</h2>
 
     <div class="chart-container">
         <!-- 視覚テスト パイチャート -->
         <div class="chart-box">
-            <h2>視覚テスト</h2>
+            <h2>視覚パート</h2>
             <canvas id="visualChart" width="400" height="400"></canvas>
         </div>
 
         <!-- 聴覚テスト パイチャート -->
         <div class="chart-box">
-            <h2>聴覚テスト</h2>
+            <h2>聴覚パート</h2>
             <canvas id="audioChart" width="400" height="400"></canvas>
         </div>
     </div>
 
     <br>
     <br>
-    <h1>あなたの記憶特性</h1>
-    <p>あなたの記憶特性は「〇〇」型です</p>
-    <p>このタイプの人は、・・・・・・・・・・です。勉強を行う際には・・・・・・・を用いてインプットを行うと記憶が定着しやすくなります。</p>
-
-
 
     <!-- resultsmenu.phpに戻るボタン -->
     <button onclick="location.href='resultsmenu.php'">一覧に戻る</button>
